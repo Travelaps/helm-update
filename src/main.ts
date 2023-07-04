@@ -20,7 +20,7 @@ const run = async (): Promise<void> => {
         owner: 'Travelaps',
         repo: 'helm-charts',
         path: `charts/${projectName}/${fileName}`,
-        ref: 'helm-updater',
+        ref: 'master',
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
           authorization: token
@@ -46,7 +46,7 @@ const run = async (): Promise<void> => {
         owner: 'Travelaps',
         repo: 'helm-charts',
         path: `charts/${projectName}/${fileName}`,
-        branch: 'helm-updater',
+        branch: 'master',
         message: `${projectName} new app version ${version}`,
         sha: result.data.sha,
         content: yamlDataBase64,
