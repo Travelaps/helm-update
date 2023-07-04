@@ -55,11 +55,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             auth: token,
             baseUrl: 'https://api.github.com'
         });
-        const result = yield octokit.request(`GET /repos/Travelaps/helm-charts/contents/charts/${projectName}/${fileName}`, {
+        const result = yield octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
             owner: 'Travelaps',
             repo: 'helm-charts',
             path: `charts/${projectName}/${fileName}`,
-            ref: 'helm-updater'
+            ref: 'helm-updater',
+            headers: {
+                'X-GitHub-Api-Version': '2022-11-28'
+            }
         });
         if (result.data.content) {
             const content = Buffer.from(result.data.content, 'base64').toString();

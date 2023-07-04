@@ -15,12 +15,15 @@ const run = async (): Promise<void> => {
     })
 
     const result: any = await octokit.request(
-      `GET /repos/Travelaps/helm-charts/contents/charts/${projectName}/${fileName}`,
+      'GET /repos/{owner}/{repo}/contents/{path}',
       {
         owner: 'Travelaps',
         repo: 'helm-charts',
         path: `charts/${projectName}/${fileName}`,
-        ref: 'helm-updater'
+        ref: 'helm-updater',
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
       }
     )
 
