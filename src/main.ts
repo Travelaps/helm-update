@@ -14,12 +14,15 @@ const run = async (): Promise<void> => {
       baseUrl: 'https://api.github.com'
     })
 
-    const result: any = await octokit.repos.getContent({
-      owner: 'Travelaps',
-      repo: 'helm-charts',
-      path: `charts/${projectName}/${fileName}`,
-      ref: 'helm-updater'
-    })
+    const result: any = await octokit.request(
+      `GET /repos/Travelaps/helm-charts/contents/charts/${projectName}/${fileName}`,
+      {
+        owner: 'Travelaps',
+        repo: 'helm-charts',
+        path: `charts/${projectName}/${fileName}`,
+        ref: 'helm-updater'
+      }
+    )
 
     if (result.data.content) {
       const content = Buffer.from(result.data.content, 'base64').toString()
