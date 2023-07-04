@@ -33,7 +33,10 @@ const run = async (): Promise<void> => {
 
       const yamlData = YAML.load(content) as {[k: string]: string}
 
-      yamlData.appVersion = version
+      const versionArr = yamlData.version.split('.')
+      versionArr[versionArr.length - 1] = version
+      yamlData.version = versionArr.join('.')
+      yamlData.appVersion = `v${version}`
 
       const yamlDataBase64 = Buffer.from(YAML.dump(yamlData), 'utf8').toString(
         'base64'
