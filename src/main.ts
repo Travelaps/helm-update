@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import {Octokit} from '@octokit/rest'
 import YAML from 'js-yaml'
+import {createTokenAuth} from '@octokit/auth-token'
 
 const run = async (): Promise<void> => {
   try {
@@ -9,8 +10,10 @@ const run = async (): Promise<void> => {
     const version: string = core.getInput('version')
     const token: string = core.getInput('token')
 
+    const auth = await createTokenAuth(token)()
+
     const octokit = new Octokit({
-      auth: token,
+      auth: auth.token,
       baseUrl: 'https://api.github.com'
     })
 
