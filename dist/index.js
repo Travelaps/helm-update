@@ -47,15 +47,10 @@ const rest_1 = __nccwpck_require__(5375);
 const js_yaml_1 = __importDefault(__nccwpck_require__(1917));
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const projectName = core.getInput('projectName') !== ''
-            ? core.getInput('projectName')
-            : 'elektraweb-booking-api-v2';
-        const fileName = core.getInput('fileName') !== ''
-            ? core.getInput('fileName')
-            : 'Chart.yaml';
-        const version = core.getInput('version') !== '' ? core.getInput('version') : '1.0.7';
-        // const path = `https://github.com/Travelaps/helm-charts/blob/helm-updater/charts/${projectName}/${fileName}`
-        const token = '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';
+        const projectName = core.getInput('projectName');
+        const fileName = core.getInput('fileName');
+        const version = core.getInput('version');
+        const token = core.getInput('token');
         const octokit = new rest_1.Octokit({
             auth: token,
             baseUrl: 'https://api.github.com'
@@ -66,7 +61,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             path: `charts/${projectName}/${fileName}`,
             ref: 'helm-updater'
         });
-        if (!Array.isArray(result.data) && result.data.content) {
+        if (result.data.content) {
             const content = Buffer.from(result.data.content, 'base64').toString();
             const yamlData = js_yaml_1.default.load(content);
             yamlData.appVersion = version;
@@ -77,10 +72,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 path: `charts/${projectName}/${fileName}`,
                 branch: 'helm-updater',
                 message: `${projectName} new app version ${version}`,
-                committer: {
-                    name: 'hamzamalfawaer',
-                    email: 'hamzamalfawaer@gmail.com'
-                },
+                // committer: {
+                //   name: 'hamzamalfawaer',
+                //   email: 'hamzamalfawaer@gmail.com'
+                // },
                 sha: result.data.sha,
                 content: yamlDataBase64,
                 headers: {

@@ -21,10 +21,10 @@ const run = async (): Promise<void> => {
       ref: 'helm-updater'
     })
 
-    if (!Array.isArray(result.data) && result.data.content) {
+    if (result.data.content) {
       const content = Buffer.from(result.data.content, 'base64').toString()
 
-      const yamlData: any = YAML.load(content)
+      const yamlData = YAML.load(content) as {[k: string]: string}
 
       yamlData.appVersion = version
 
