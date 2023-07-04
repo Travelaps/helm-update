@@ -10,6 +10,9 @@ inputs:
   version:
     required: true
     description: 'version'
+  token:
+    required: true
+    description: 'token'
 runs:
   using: 'node16'
   main: 'dist/index.js'
