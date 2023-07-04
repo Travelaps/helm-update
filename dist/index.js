@@ -68,7 +68,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (result.data.content) {
             const content = Buffer.from(result.data.content, 'base64').toString();
             const yamlData = js_yaml_1.default.load(content);
-            yamlData.appVersion = version;
+            const versionArr = yamlData.version.split('.');
+            versionArr[versionArr.length - 1] = version;
+            yamlData.version = versionArr.join('.');
+            yamlData.appVersion = `v${version}`;
             const yamlDataBase64 = Buffer.from(js_yaml_1.default.dump(yamlData), 'utf8').toString('base64');
             yield octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
                 owner: 'Travelaps',
