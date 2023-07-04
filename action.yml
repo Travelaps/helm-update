@@ -1,6 +1,5 @@
-name: 'Your name here'
+name: 'Helm Update Action'
 description: 'Provide a description here'
-author: 'Your name or organization here'
 inputs:
   projectName:
     required: true

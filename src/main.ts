@@ -4,19 +4,11 @@ import YAML from 'js-yaml'
 
 const run = async (): Promise<void> => {
   try {
-    const projectName: string =
-      core.getInput('projectName') !== ''
-        ? core.getInput('projectName')
-        : 'elektraweb-booking-api-v2'
-    const fileName: string =
-      core.getInput('fileName') !== ''
-        ? core.getInput('fileName')
-        : 'Chart.yaml'
-    const version: string =
-      core.getInput('version') !== '' ? core.getInput('version') : '1.0.7'
+    const projectName: string = core.getInput('projectName')
+    const fileName: string = core.getInput('fileName')
+    const version: string = core.getInput('version')
+    const token: string = core.getInput('token')
 
-    // const path = `https://github.com/Travelaps/helm-charts/blob/helm-updater/charts/${projectName}/${fileName}`
-    const token = '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'
     const octokit = new Octokit({
       auth: token,
       baseUrl: 'https://api.github.com'
@@ -46,10 +38,10 @@ const run = async (): Promise<void> => {
         path: `charts/${projectName}/${fileName}`,
         branch: 'helm-updater',
         message: `${projectName} new app version ${version}`,
-        committer: {
-          name: 'hamzamalfawaer',
-          email: 'hamzamalfawaer@gmail.com'
-        },
+        // committer: {
+        //   name: 'hamzamalfawaer',
+        //   email: 'hamzamalfawaer@gmail.com'
+        // },
         sha: result.data.sha,
         content: yamlDataBase64,
         headers: {
