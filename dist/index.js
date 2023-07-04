@@ -45,16 +45,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const rest_1 = __nccwpck_require__(5375);
 const js_yaml_1 = __importDefault(__nccwpck_require__(1917));
-const auth_token_1 = __nccwpck_require__(334);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const projectName = core.getInput('projectName');
         const fileName = core.getInput('fileName');
         const version = core.getInput('version');
         const token = core.getInput('token');
-        const auth = yield (0, auth_token_1.createTokenAuth)(token)();
         const octokit = new rest_1.Octokit({
-            auth: auth.token,
+            // auth: token,
             baseUrl: 'https://api.github.com'
         });
         const result = yield octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
@@ -63,7 +61,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             path: `charts/${projectName}/${fileName}`,
             ref: 'helm-updater',
             headers: {
-                'X-GitHub-Api-Version': '2022-11-28'
+                'X-GitHub-Api-Version': '2022-11-28',
+                authorization: token
             }
         });
         if (result.data.content) {
@@ -77,14 +76,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 path: `charts/${projectName}/${fileName}`,
                 branch: 'helm-updater',
                 message: `${projectName} new app version ${version}`,
-                // committer: {
-                //   name: 'hamzamalfawaer',
-                //   email: 'hamzamalfawaer@gmail.com'
-                // },
                 sha: result.data.sha,
                 content: yamlDataBase64,
                 headers: {
-                    'X-GitHub-Api-Version': '2022-11-28'
+                    'X-GitHub-Api-Version': '2022-11-28',
+                    authorization: `token ${token}`
                 }
             });
             // eslint-disable-next-line no-console
@@ -1861,91 +1857,6 @@ function checkBypass(reqUrl) {
 }
 exports.checkBypass = checkBypass;
 //# sourceMappingURL=proxy.js.map
-
-/***/ }),
-
-/***/ 334:
-/***/ ((module) => {
-
-"use strict";
-
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-// pkg/dist-src/index.js
-var dist_src_exports = {};
-__export(dist_src_exports, {
-  createTokenAuth: () => createTokenAuth
-});
-module.exports = __toCommonJS(dist_src_exports);
-
-// pkg/dist-src/auth.js
-var REGEX_IS_INSTALLATION_LEGACY = /^v1\./;
-var REGEX_IS_INSTALLATION = /^ghs_/;
-var REGEX_IS_USER_TO_SERVER = /^ghu_/;
-async function auth(token) {
-  const isApp = token.split(/\./).length === 3;
-  const isInstallation = REGEX_IS_INSTALLATION_LEGACY.test(token) || REGEX_IS_INSTALLATION.test(token);
-  const isUserToServer = REGEX_IS_USER_TO_SERVER.test(token);
-  const tokenType = isApp ? "app" : isInstallation ? "installation" : isUserToServer ? "user-to-server" : "oauth";
-  return {
-    type: "token",
-    token,
-    tokenType
-  };
-}
-
-// pkg/dist-src/with-authorization-prefix.js
-function withAuthorizationPrefix(token) {
-  if (token.split(/\./).length === 3) {
-    return `bearer ${token}`;
-  }
-  return `token ${token}`;
-}
-
-// pkg/dist-src/hook.js
-async function hook(token, request, route, parameters) {
-  const endpoint = request.endpoint.merge(
-    route,
-    parameters
-  );
-  endpoint.headers.authorization = withAuthorizationPrefix(token);
-  return request(endpoint);
-}
-
-// pkg/dist-src/index.js
-var createTokenAuth = function createTokenAuth2(token) {
-  if (!token) {
-    throw new Error("[@octokit/auth-token] No token passed to createTokenAuth");
-  }
-  if (typeof token !== "string") {
-    throw new Error(
-      "[@octokit/auth-token] Token passed to createTokenAuth is not a string"
-    );
-  }
-  token = token.replace(/^(token|bearer) +/i, "");
-  return Object.assign(auth.bind(null, token), {
-    hook: hook.bind(null, token)
-  });
-};
-// Annotate the CommonJS export names for ESM import in node:
-0 && (0);
-
 
 /***/ }),
 
