@@ -18,7 +18,7 @@ const run = async (): Promise<void> => {
     const result: any = await octokit.request(
       'GET /repos/{owner}/{repo}/contents/{path}',
       {
-        owner: `${owner}`,
+        owner: owner ? `${owner}` : 'Travelaps' ,
         repo: 'helm-charts',
         path: `charts/${projectName}/${fileName}`,
         ref: 'master',
@@ -44,7 +44,7 @@ const run = async (): Promise<void> => {
       )
 
       await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-        owner: `${owner}`,
+        owner: owner ? `${owner}` : 'Travelaps' ,
         repo: 'helm-charts',
         path: `charts/${projectName}/${fileName}`,
         branch: 'master',
